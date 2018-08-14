@@ -1,24 +1,35 @@
 package com.company;
+import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        String inputImagePath = "C:/Temp/1.png";
-        String outputImagePath1 = "C:/Temp/1_Fixed.png";
-        String outputImagePath2 = "C:/Temp/1_Smaller.jpg";
+
+        String srcFolderPath = System.getProperty("user.dir") + "/Image/";
+        String outFolderPath = srcFolderPath + "Convert/";
+       // String inputImagePath = "C:/Temp/1.png";
+       // String outputImagePath1 = "C:/Temp/1_Fixed.png";
+      //  String outputImagePath2 = inputFolder_Name + "1_Smaller.jpg";
+        int scaledWidth = 102;
+        int scaledHeight = 76;
 
 
         try {
-            // resize to a fixed width (not proportional)
-            int scaledWidth = 102;
-            int scaledHeight = 76;
-            ImageResizer.resize(inputImagePath, outputImagePath1, scaledWidth, scaledHeight);
+            File srcFiles = new File(srcFolderPath);
+            File outFolder = new File(outFolderPath);
+              outFolder.mkdir();
 
-            // resize smaller by 50%
-            double percent = 0.5;
-            ImageResizer.resize(inputImagePath, outputImagePath2, percent);
 
+            for( String file_Name : srcFiles.list() ) {
+                // resize to a fixed width (not proportional)
+
+                ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
+
+                // resize smaller by 50%
+                /*double percent = 0.5;
+                ImageResizer.resize(inputImagePath, outputImagePath2, percent);*/
+            }
 
 
         } catch (IOException ex) {
