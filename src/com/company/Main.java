@@ -18,12 +18,13 @@ public class Main {
         try {
             File srcFiles = new File(srcFolderPath);
             File outFolder = new File(outFolderPath);
-              outFolder.mkdir();
+            outFolder.mkdir();
 
 
             for( String file_Name : srcFiles.list() ) {
                 // resize to a fixed width (not proportional)
-
+            if(!checkFileIsImage(file_Name))
+                     break;
                 ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
 
                 // resize smaller by 50%
@@ -38,4 +39,13 @@ public class Main {
         }
     }
 
+    private static boolean checkFileIsImage(String fName){
+        String typesFile[] = new String[] {"jpg","jpeg","png"};
+
+        for (String typeF: typesFile){
+            if( fName.toLowerCase().contains(typeF) )
+                return true;
+        }
+                   return false;
+    }
 }

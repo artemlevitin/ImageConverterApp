@@ -19,9 +19,13 @@ public class ImageResizer {
      * @param scaledHeight    absolute height in pixels
      * @throws IOException
      */
+
+
+
     public static void resize(String inputImagePath,
                               String outputImagePath, int scaledWidth, int scaledHeight)
             throws IOException {
+
         // reads input image
         File inputFile = new File(inputImagePath);
         BufferedImage inputImage = ImageIO.read(inputFile);
