@@ -25,11 +25,11 @@ public class Main {
                 // resize to a fixed width (not proportional)
             if(!checkFileIsImage(file_Name))
                      break;
-                ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
-
+              //  ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
+               // ImageBlackWhite.convert(srcFolderPath + file_Name, outFolderPath + file_Name);
                 // resize smaller by 50%
-                /*double percent = 0.5;
-                ImageResizer.resize(inputImagePath, outputImagePath2, percent);*/
+                double percent = 0.5;
+                ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , percent);
             }
 
 

@@ -8,10 +8,11 @@ import java.io.IOException;
 
 public class ImageBlackWhite {
 
-void convert() throws IOException {
+    public  ImageBlackWhite(){}
 
-    File file = new File("C:\\Users\\admin\\IdeaProjects\\ImageConverterApp\\Image\\1.png");
-    BufferedImage orginalImage = ImageIO.read(file);
+    static void  convert(String inputImagePath,String outputImagePath) throws IOException {
+
+    BufferedImage orginalImage = ImageIO.read(new File(inputImagePath));
 
     BufferedImage blackAndWhiteImg = new BufferedImage(
             orginalImage.getWidth(), orginalImage.getHeight(),
@@ -20,7 +21,7 @@ void convert() throws IOException {
     Graphics2D graphics = blackAndWhiteImg.createGraphics();
         graphics.drawImage(orginalImage, 0, 0, null);
 
-    ImageIO.write(blackAndWhiteImg, "png", new File("C:\\Users\\admin\\IdeaProjects\\ImageConverterApp\\Image\\1_c.png"));
+    ImageIO.write(blackAndWhiteImg, "png", new File(outputImagePath));
 
     }
 

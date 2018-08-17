@@ -27,8 +27,8 @@ public class ImageResizer {
             throws IOException {
 
         // reads input image
-        File inputFile = new File(inputImagePath);
-        BufferedImage inputImage = ImageIO.read(inputFile);
+
+        BufferedImage inputImage = ImageIO.read(new File(inputImagePath));
 
         // creates output image
         BufferedImage outputImage = new BufferedImage(scaledWidth,
