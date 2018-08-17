@@ -1,6 +1,8 @@
 package com.company;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 
@@ -8,12 +10,11 @@ public class Main {
 
         String srcFolderPath = System.getProperty("user.dir") + "/Image/";
         String outFolderPath = srcFolderPath + "Convert/";
-       // String inputImagePath = "C:/Temp/1.png";
-       // String outputImagePath1 = "C:/Temp/1_Fixed.png";
-      //  String outputImagePath2 = inputFolder_Name + "1_Smaller.jpg";
-        int scaledWidth = 102;
-        int scaledHeight = 76;
 
+        ExecutorService ex = Executors.newFixedThreadPool(3);
+
+        // resize smaller by 50%
+        double percent = 0.5;
 
         try {
             File srcFiles = new File(srcFolderPath);
@@ -25,17 +26,16 @@ public class Main {
                 // resize to a fixed width (not proportional)
             if(!checkFileIsImage(file_Name))
                      break;
-              //  ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
+               //  ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
                // ImageBlackWhite.convert(srcFolderPath + file_Name, outFolderPath + file_Name);
-                // resize smaller by 50%
-                double percent = 0.5;
-                ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , percent);
+               // ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , percent);
+                ex.execute( new ImageBlackWhite(srcFolderPath + file_Name, outFolderPath + file_Name));
+                ex.execute( new ImageResizer(srcFolderPath + file_Name, outFolderPath + file_Name, percent) );
             }
-
-
-        } catch (IOException ex) {
+            ex.shutdown();
+        } catch (Exception exc) {
             System.out.println("Error resizing the image.");
-            ex.printStackTrace();
+            exc.printStackTrace();
         }
     }
 

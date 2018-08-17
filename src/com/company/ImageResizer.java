@@ -7,27 +7,27 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class ImageResizer {
+public class ImageResizer implements Runnable{
 
-    /**
-     * Resizes an image to a absolute width and height (the image may not be
-     * proportional)
-     *
-     * @param inputImagePath  Path of the original image
-     * @param outputImagePath Path to save the resized image
-     * @param scaledWidth     absolute width in pixels
-     * @param scaledHeight    absolute height in pixels
-     * @throws IOException
-     */
+    private String inputImagePath;
+    private String outputImagePath;
+    double percent;
 
+   // Thread t;
+
+    public ImageResizer(String inputImagePath,String outputImagePath, double percent ){
+        this.inputImagePath = inputImagePath;
+        this.outputImagePath = outputImagePath;
+        this.percent = percent;
+      //  t = new Thread(this,"ImageResizer_"+inputImagePath.substring(inputImagePath.lastIndexOf("/")+1));
+       // t.start();
+    }
 
 
     public static void resize(String inputImagePath,
                               String outputImagePath, int scaledWidth, int scaledHeight)
             throws IOException {
-
         // reads input image
-
         BufferedImage inputImage = ImageIO.read(new File(inputImagePath));
 
         // creates output image
@@ -45,17 +45,12 @@ public class ImageResizer {
 
         // writes to output file
         ImageIO.write(outputImage, formatName, new File(outputImagePath));
+
+        System.out.println(Thread.currentThread());
+
     }
 
-    /**
-     * Resizes an image by a percentage of original size (proportional).
-     *
-     * @param inputImagePath  Path of the original image
-     * @param outputImagePath Path to save the resized image
-     * @param percent         a double number specifies percentage of the output image
-     *                        over the input image.
-     * @throws IOException
-     */
+
     public static void resize(String inputImagePath,
                               String outputImagePath, double percent) throws IOException {
         File inputFile = new File(inputImagePath);
@@ -64,4 +59,22 @@ public class ImageResizer {
         int scaledHeight = (int) (inputImage.getHeight() * percent);
         resize(inputImagePath, outputImagePath, scaledWidth, scaledHeight);
     }
+
+    public void run() {
+
+        try {
+            File inputFile = new File(inputImagePath);
+            BufferedImage inputImage = ImageIO.read(inputFile);
+            int scaledWidth = (int) (inputImage.getWidth() * percent);
+            int scaledHeight = (int) (inputImage.getHeight() * percent);
+            resize(inputImagePath, outputImagePath, scaledWidth, scaledHeight);
+
+    }
+    catch(Exception e){
+            e.getStackTrace();
+        }
+
+
+    }
+
 }
