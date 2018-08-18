@@ -6,18 +6,18 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ImageBlackWhite implements Runnable {
+public class ImageBlackWhite extends ImageConvert implements Runnable  {
 
-   private String inputImagePath;
-   private String outputImagePath;
+
    //Thread t ;
 
     public  ImageBlackWhite(String inputImagePath,String outputImagePath){
-        this.inputImagePath = inputImagePath;
-        this.outputImagePath = outputImagePath;
+        super(inputImagePath, outputImagePath);
        // t = new Thread(this,"ImageResizer_"+inputImagePath.substring(inputImagePath.lastIndexOf("/")+1));
        // t.start();
     }
+
+
 
     static void  convert(String inputImagePath,String outputImagePath) throws IOException {
 

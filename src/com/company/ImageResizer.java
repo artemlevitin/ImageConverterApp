@@ -7,17 +7,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class ImageResizer implements Runnable{
+public class ImageResizer extends ImageConvert implements Runnable{
 
-    private String inputImagePath;
-    private String outputImagePath;
     double percent;
 
    // Thread t;
 
     public ImageResizer(String inputImagePath,String outputImagePath, double percent ){
-        this.inputImagePath = inputImagePath;
-        this.outputImagePath = outputImagePath;
+       super(inputImagePath,outputImagePath) ;
         this.percent = percent;
       //  t = new Thread(this,"ImageResizer_"+inputImagePath.substring(inputImagePath.lastIndexOf("/")+1));
        // t.start();

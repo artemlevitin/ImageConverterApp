@@ -25,7 +25,7 @@ public class Main {
             for( String file_Name : srcFiles.list() ) {
                 // resize to a fixed width (not proportional)
             if(!checkFileIsImage(file_Name))
-                     break;
+                    continue;
                //  ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
                // ImageBlackWhite.convert(srcFolderPath + file_Name, outFolderPath + file_Name);
                // ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , percent);
