@@ -1,20 +1,31 @@
 package com.company;
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
         String srcFolderPath = System.getProperty("user.dir") + "/Image/";
         String outFolderPath = srcFolderPath + "Convert/";
+        double percentResize = 0.5;
+        boolean blackWhite = false;
+
+
+        Menu m =new Menu();
+        if(m.allGood){
+            srcFolderPath = m.srcFolderPath;
+            outFolderPath = m.outFolderPath;
+            percentResize = m.percentResize;
+            blackWhite = m.blackWhite;
+        }
+
+
+
 
         ExecutorService ex = Executors.newFixedThreadPool(3);
 
-        // resize smaller by 50%
-        double percent = 0.5;
+
 
         try {
             File srcFiles = new File(srcFolderPath);
@@ -23,14 +34,15 @@ public class Main {
 
 
             for( String file_Name : srcFiles.list() ) {
-                // resize to a fixed width (not proportional)
+
             if(!checkFileIsImage(file_Name))
                     continue;
-               //  ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , scaledWidth, scaledHeight);
-               // ImageBlackWhite.convert(srcFolderPath + file_Name, outFolderPath + file_Name);
-               // ImageResizer.resize(srcFolderPath + file_Name, outFolderPath + file_Name , percent);
-                ex.execute( new ImageBlackWhite(srcFolderPath + file_Name, outFolderPath + file_Name));
-                ex.execute( new ImageResizer(srcFolderPath + file_Name, outFolderPath + file_Name, percent) );
+                if(blackWhite) {
+                    ex.execute(new ImageBlackWhite(srcFolderPath + file_Name, outFolderPath + file_Name));
+                    ex.execute(new ImageResizer(outFolderPath + file_Name, outFolderPath + file_Name, percentResize));
+                }
+               else
+                   ex.execute( new ImageResizer(srcFolderPath + file_Name, outFolderPath + file_Name, percentResize) );
             }
             ex.shutdown();
         } catch (Exception exc) {

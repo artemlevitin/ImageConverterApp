@@ -48,7 +48,7 @@ public class ImageBlackWhite extends ImageConvert implements Runnable  {
             Graphics2D graphics = blackAndWhiteImg.createGraphics();
             graphics.drawImage(orginalImage, 0, 0, null);
 
-            ImageIO.write(blackAndWhiteImg, "png", new File(outputImagePath));
+            ImageIO.write(blackAndWhiteImg, formatName, new File(outputImagePath));
             System.out.println(Thread.currentThread()+ " " + this.toString());
         }
         catch (Exception exc){
