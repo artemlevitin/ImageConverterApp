@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 import javax.imageio.ImageIO;
 
@@ -13,8 +14,8 @@ public class ImageResizer extends ImageConvert implements Runnable{
 
    // Thread t;
 
-    public ImageResizer(String inputImagePath,String outputImagePath, double percent ){
-       super(inputImagePath,outputImagePath) ;
+    public ImageResizer(String inputImagePath, String outputImagePath, double percent, Semaphore semph){
+       super(inputImagePath,outputImagePath, semph) ;
         this.percent = percent;
       //  t = new Thread(this,"ImageResizer_"+inputImagePath.substring(inputImagePath.lastIndexOf("/")+1));
        // t.start();
@@ -22,29 +23,40 @@ public class ImageResizer extends ImageConvert implements Runnable{
 
 
     public void resize(String inputImagePath,
-                              String outputImagePath, int scaledWidth, int scaledHeight)
-            throws IOException {
-        // reads input image
-        BufferedImage inputImage = ImageIO.read(new File(inputImagePath));
+                              String outputImagePath, int scaledWidth, int scaledHeight) {
 
-        // creates output image
-        BufferedImage outputImage = new BufferedImage(scaledWidth,
-                scaledHeight, inputImage.getType());
+        try {
+            semph.acquire();
 
-        // scales the input image to the output image
-        Graphics2D g2d = outputImage.createGraphics();
-        g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
-        g2d.dispose();
+            // reads input image
+            BufferedImage inputImage = ImageIO.read(new File(inputImagePath));
+
+            // creates output image
+            BufferedImage outputImage = new BufferedImage(scaledWidth,
+                    scaledHeight, inputImage.getType());
+
+            // scales the input image to the output image
+            Graphics2D g2d = outputImage.createGraphics();
+            g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
+            g2d.dispose();
 
         /*// extracts extension of output file
         String formatName = outputImagePath.substring(outputImagePath
                 .lastIndexOf(".") + 1);*/
 
-        // writes to output file
-        ImageIO.write(outputImage, formatName, new File(outputImagePath));
+            // writes to output file
+            ImageIO.write(outputImage, formatName, new File(outputImagePath));
 
-        System.out.println(Thread.currentThread());
+            System.out.println(Thread.currentThread()+ " " + this.toString() + inputImagePath);
 
+        }
+
+    catch(Exception exc){
+        System.out.println(exc.getMessage());
+        }
+    finally {
+            semph.release();
+        }
     }
 
 

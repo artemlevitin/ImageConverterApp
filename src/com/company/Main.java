@@ -1,7 +1,9 @@
 package com.company;
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 public class Main {
 
@@ -9,23 +11,18 @@ public class Main {
         String srcFolderPath = System.getProperty("user.dir") + "/Image/";
         String outFolderPath = srcFolderPath + "Convert/";
         double percentResize = 0.5;
-        boolean blackWhite = false;
+        boolean blackWhite = true;
 
 
-        Menu m =new Menu();
+        /*Menu m =new Menu();
         if(m.allGood){
             srcFolderPath = m.srcFolderPath;
             outFolderPath = m.outFolderPath;
             percentResize = m.percentResize;
             blackWhite = m.blackWhite;
-        }
+        }*/
 
-
-
-
-        ExecutorService ex = Executors.newFixedThreadPool(3);
-
-
+       ExecutorService ex = Executors.newFixedThreadPool(7);
 
         try {
             File srcFiles = new File(srcFolderPath);
@@ -37,18 +34,22 @@ public class Main {
 
             if(!checkFileIsImage(file_Name))
                     continue;
+                Semaphore semph = new Semaphore(1);
+
                 if(blackWhite) {
-                    ex.execute(new ImageBlackWhite(srcFolderPath + file_Name, outFolderPath + file_Name));
-                    ex.execute(new ImageResizer(outFolderPath + file_Name, outFolderPath + file_Name, percentResize));
+
+                    ex.execute(new ImageBlackWhite(srcFolderPath + file_Name, outFolderPath + file_Name, semph));
+                    ex.execute(new ImageResizer(outFolderPath + file_Name, outFolderPath + file_Name, percentResize, semph));
                 }
                else
-                   ex.execute( new ImageResizer(srcFolderPath + file_Name, outFolderPath + file_Name, percentResize) );
+                   ex.execute( new ImageResizer(srcFolderPath + file_Name, outFolderPath + file_Name, percentResize, semph) );
             }
-            ex.shutdown();
+
         } catch (Exception exc) {
             System.out.println("Error resizing the image.");
             exc.printStackTrace();
         }
+        ex.shutdown();
     }
 
     private static boolean checkFileIsImage(String fName){
