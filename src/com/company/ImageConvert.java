@@ -9,11 +9,12 @@ public class ImageConvert {
     Semaphore semph;
 
 
-    public ImageConvert(String inputImagePath, String outputImagePath, Semaphore semph) {
+    public ImageConvert(String inputImagePath, String outputImagePath, Semaphore semph) throws InterruptedException {
         this.inputImagePath = inputImagePath;
         this.outputImagePath = outputImagePath;
         formatName = outputImagePath.substring(outputImagePath
                 .lastIndexOf(".") + 1);
         this.semph = semph;
+        semph.acquire();
     }
 }

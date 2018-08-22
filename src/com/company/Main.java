@@ -1,16 +1,19 @@
 package com.company;
 import java.io.File;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
+
+
+
 
 public class Main {
 
     public static void main(String[] args) throws Exception {
         String srcFolderPath = System.getProperty("user.dir") + "/Image/";
         String outFolderPath = srcFolderPath + "Convert/";
-        double percentResize = 0.5;
+        double percentResize = 0.1;
         boolean blackWhite = true;
 
 
@@ -21,7 +24,6 @@ public class Main {
             percentResize = m.percentResize;
             blackWhite = m.blackWhite;
         }*/
-
        ExecutorService ex = Executors.newFixedThreadPool(7);
 
         try {
@@ -49,7 +51,11 @@ public class Main {
             System.out.println("Error resizing the image.");
             exc.printStackTrace();
         }
-        ex.shutdown();
+        finally {
+            ex.shutdown();
+            boolean done = ex.awaitTermination(1, TimeUnit.MILLISECONDS);
+            System.out.println(done);
+        }
     }
 
     private static boolean checkFileIsImage(String fName){

@@ -12,24 +12,25 @@ public class ImageResizer extends ImageConvert implements Runnable{
 
     double percent;
 
-   // Thread t;
 
-    public ImageResizer(String inputImagePath, String outputImagePath, double percent, Semaphore semph){
+    public ImageResizer(String inputImagePath, String outputImagePath, double percent, Semaphore semph) throws InterruptedException {
        super(inputImagePath,outputImagePath, semph) ;
         this.percent = percent;
-      //  t = new Thread(this,"ImageResizer_"+inputImagePath.substring(inputImagePath.lastIndexOf("/")+1));
-       // t.start();
+
     }
 
 
-    public void resize(String inputImagePath,
-                              String outputImagePath, int scaledWidth, int scaledHeight) {
+
+
+    public void run() {
 
         try {
-            semph.acquire();
 
-            // reads input image
-            BufferedImage inputImage = ImageIO.read(new File(inputImagePath));
+            File inputFile = new File(inputImagePath);
+            BufferedImage inputImage = ImageIO.read(inputFile);
+            int scaledWidth = (int) (inputImage.getWidth() * percent);
+            int scaledHeight = (int) (inputImage.getHeight() * percent);
+
 
             // creates output image
             BufferedImage outputImage = new BufferedImage(scaledWidth,
@@ -40,49 +41,20 @@ public class ImageResizer extends ImageConvert implements Runnable{
             g2d.drawImage(inputImage, 0, 0, scaledWidth, scaledHeight, null);
             g2d.dispose();
 
-        /*// extracts extension of output file
-        String formatName = outputImagePath.substring(outputImagePath
-                .lastIndexOf(".") + 1);*/
 
             // writes to output file
             ImageIO.write(outputImage, formatName, new File(outputImagePath));
 
-            System.out.println(Thread.currentThread()+ " " + this.toString() + inputImagePath);
+            System.out.println(Thread.currentThread().getName()+ " " + this.toString() + " " +  inputImagePath);
+
 
         }
-
-    catch(Exception exc){
-        System.out.println(exc.getMessage());
+    catch(Exception e){
+            e.getStackTrace();
         }
     finally {
             semph.release();
         }
-    }
-
-
-    public  void resize(String inputImagePath,
-                              String outputImagePath, double percent) throws IOException {
-        File inputFile = new File(inputImagePath);
-        BufferedImage inputImage = ImageIO.read(inputFile);
-        int scaledWidth = (int) (inputImage.getWidth() * percent);
-        int scaledHeight = (int) (inputImage.getHeight() * percent);
-        resize(inputImagePath, outputImagePath, scaledWidth, scaledHeight);
-    }
-
-    public void run() {
-
-        try {
-            File inputFile = new File(inputImagePath);
-            BufferedImage inputImage = ImageIO.read(inputFile);
-            int scaledWidth = (int) (inputImage.getWidth() * percent);
-            int scaledHeight = (int) (inputImage.getHeight() * percent);
-            resize(inputImagePath, outputImagePath, scaledWidth, scaledHeight);
-
-    }
-    catch(Exception e){
-            e.getStackTrace();
-        }
-
 
     }
 
